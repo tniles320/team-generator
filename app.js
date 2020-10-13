@@ -1,7 +1,6 @@
 const Manager = require("./lib/Manager");
-// const Engineer = require("./lib/Engineer");
-// const Intern = require("./lib/Intern");
-const Employee = require("./lib/Employee");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -12,6 +11,9 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 const employeeList = [];
+const managerList = [];
+const engineerList = [];
+const internList = [];
 
 const employeeQuestions = [
     {
@@ -138,8 +140,39 @@ const addIntern = (res) => {
 }
 
 const renderEmployeeData = (employeeList) => {
-    console.log(employeeList);
+    employeeList.forEach(findManager)
+    employeeList.forEach(findEngineer)
+    employeeList.forEach(findIntern)
+    console.log(managerList)
+    console.log(engineerList)
+    console.log(internList)
+    // need to create 3 functions that use each list to create new classes for each employee
 }
+
+const findManager = (manager) => {
+    if(manager.role === "Manager") {
+        // creating new classes, need to add to this so it generates html for each new class
+        manager.name = new Manager(manager.name, manager.id, manager.email, manager.officeNumber)
+        // testing to make sure the function is called properly
+        console.log(manager.name.getRole());
+        // array will probably not be used
+        managerList.push(manager)
+    }
+}
+
+const findEngineer = (engineer) => {
+    if(engineer.role === "Engineer") {
+        engineerList.push(engineer)
+    }
+}
+
+const findIntern = (intern) => {
+    if(intern.role === "Intern") {
+        internList.push(intern)
+    }
+}
+
+
 
 addEmployee();
 
