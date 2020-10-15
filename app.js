@@ -10,10 +10,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-const employeeList = [];
-const managerList = [];
-const engineerList = [];
-const internList = [];
+const employees = [];
 
 const employeeQuestions = [
     {
@@ -99,12 +96,13 @@ const addManager = (res) => {
     inquirer.prompt(managerQuestions)
     .then((res) => {
         managerData.officeNumber = res.officeNumber;
+        const newTeamMember = new Manager(`${managerData.name}`, `${managerData.id}`, `${managerData.email}`, `${managerData.officeNumber}`);
         if(res.newEmployee === "Yes"){
-            employeeList.push(managerData);
+            employees.push(newTeamMember);
             addEmployee();
         } else {
-            employeeList.push(managerData);
-            renderEmployeeData(employeeList);
+            employees.push(newTeamMember);
+            writeFile(employees);
         } 
     });
 }
@@ -114,12 +112,13 @@ const addEngineer = (res) => {
     inquirer.prompt(engineerQuestions)
     .then((res) => {
         engineerData.github = res.github;
+        const newTeamMember = new Engineer(engineerData.name, engineerData.id, engineerData.email, engineerData.github);
         if(res.newEmployee === "Yes"){
-            employeeList.push(engineerData);
+            employees.push(newTeamMember);
             addEmployee();
         } else {
-            employeeList.push(engineerData);
-            renderEmployeeData(employeeList);
+            employees.push(newTeamMember);
+            writeFile(employees);
         } 
     });
 }
@@ -129,73 +128,19 @@ const addIntern = (res) => {
     inquirer.prompt(internQuestions)
     .then((res) => {
         internData.school = res.school;
+        const newTeamMember = new Intern(internData.name, internData.id, internData.email, internData.school);
         if(res.newEmployee === "Yes"){
-            employeeList.push(internData);
+            employees.push(newTeamMember);
             addEmployee();
         } else {
-            employeeList.push(internData);
-            renderEmployeeData(employeeList);
+            employees.push(newTeamMember);
+            writeFile(employees);
         } 
     });
 }
 
-const renderEmployeeData = (employeeList) => {
-    employeeList.forEach(findManager)
-    employeeList.forEach(findEngineer)
-    employeeList.forEach(findIntern)
-    console.log(managerList)
-    console.log(engineerList)
-    console.log(internList)
-    // need to create 3 functions that use each list to create new classes for each employee
+const writeFile = employees => {
+    return fs.writeFileSync(outputPath, render(employees));
 }
-
-const findManager = (manager) => {
-    if(manager.role === "Manager") {
-        // creating new classes, need to add to this so it generates html for each new class
-        manager.name = new Manager(manager.name, manager.id, manager.email, manager.officeNumber)
-        // testing to make sure the function is called properly
-        console.log(manager.name.getRole());
-        // array will probably not be used
-        managerList.push(manager)
-    }
-}
-
-const findEngineer = (engineer) => {
-    if(engineer.role === "Engineer") {
-        engineerList.push(engineer)
-    }
-}
-
-const findIntern = (intern) => {
-    if(intern.role === "Intern") {
-        internList.push(intern)
-    }
-}
-
-
 
 addEmployee();
-
-
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
