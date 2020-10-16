@@ -5,9 +5,11 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
+// variables that store the output directory and html file name
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
+// render function from html file
 const render = require("./lib/htmlRenderer");
 
 const employees = [];
@@ -78,6 +80,7 @@ const internQuestions = [
     },
 ]
 
+// prompts user with questions then prompts more questions based off answers
 const addEmployee = () => {
     inquirer.prompt(employeeQuestions)
     .then((res) => {
@@ -91,6 +94,7 @@ const addEmployee = () => {
     });
 }
 
+// prompts user with manager question, creates new manager class, and pushes class to employees array
 const addManager = (res) => {
     const managerData = res;
     inquirer.prompt(managerQuestions)
@@ -107,6 +111,7 @@ const addManager = (res) => {
     });
 }
 
+// prompts user with engineer question, creates new engineer class, and pushes class to employees array
 const addEngineer = (res) => {
     const engineerData = res;
     inquirer.prompt(engineerQuestions)
@@ -123,6 +128,7 @@ const addEngineer = (res) => {
     });
 }
 
+// prompts user with intern question, creates new intern class, and pushes class to employees array
 const addIntern = (res) => {
     const internData = res;
     inquirer.prompt(internQuestions)
@@ -139,6 +145,7 @@ const addIntern = (res) => {
     });
 }
 
+// writes team.html file to output directory
 const writeFile = employees => {
     return fs.writeFileSync(outputPath, render(employees));
 }
